@@ -3,6 +3,9 @@
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\BukuController;
+use App\Http\Controllers\PeminjamanController;
 
 // Guest Routes
 Route::middleware('guest')->group(function () {
@@ -20,11 +23,14 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:Administrator')->prefix('admin')->group(function () {
         Route::get('/dashboard', fn() => view('admin.dashboard'))->name('admin.dashboard');
         Route::resource('users', UserController::class);
+        Route::resource('kategori', KategoriController::class)->except(['show', 'edit', 'create']);
 
     });
     // Petugas Area
-    Route::middleware('role:Petugas')->prefix('petugas')->group(function () {
+    Route::middleware('role:Petugas,Administrator')->prefix('petugas')->group(function () {
         Route::get('/dashboard', fn() => view('petugas.dashboard'))->name('petugas.dashboard');
+        Route::resource('buku', BukuController::class);
+        Route::resource('peminjaman', PeminjamanController::class);
     });
 
     // Peminjam Area
